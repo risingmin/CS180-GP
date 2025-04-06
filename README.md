@@ -1,4 +1,6 @@
-# CS180 Group Project Phase 1 - Marketplace System
+# CS180 Group Project - Marketplace
+## L10-Team 1 Phase 1
+### Sungmin Lee, Justin Zheng, Krisha Soneji, Christopher Han
 
 ## Compilation and Running Instructions
 
@@ -9,13 +11,6 @@ To compile the project, open a terminal in the project root directory and run:
 javac -cp .:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar -d bin src/*.java test/*.java
 ```
 
-### Running the Application
-To run the application:
-
-```bash
-java -cp bin Main
-```
-
 ### Running Tests
 To run all JUnit tests:
 
@@ -23,24 +18,17 @@ To run all JUnit tests:
 java -cp bin:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore DatabaseTest DatabaseDataTest ItemTest MessageTest PaymentProcessorTest TransactionTest TransactionResultTest UserTest
 ```
 
-To run a specific test class (e.g., UserTest):
+To run a specific test class (ex. UserTest):
 
 ```bash
 java -cp bin:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore UserTest
 ```
 
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
-
 ## Submission Information
 
-| Team Member     | Submission Responsibility                    |
+| Team Member     | Submission Responsibility                   |
 |-----------------|---------------------------------------------|
-| Sungmin Lee     | Submitted Vocareum workspace             |
-| Student 2 Name  | Submitted Vocareum workspace                |
-| Student 3 Name  | Submitted Code Implementation on Brightspace |
-| Student 4 Name  | Submitted Test Cases on Brightspace         |
+| Sungmin Lee     | Submitted Vocareum workspace                |
 
 ## Class Descriptions
 
@@ -48,26 +36,26 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 **Functionality:**
 - Represents a user in the system with username, password, and balance
 - Provides methods to get username, check password, get/set balance
-- All users start with an initial balance of 100.0
+- All users start with an initial, arbitrary balance of 100.0
 
 **Testing:**
 - Verified username retrieval functionality
-- Confirmed password validation works correctly for both correct and incorrect passwords
-- Validated initial balance is set to 100.0
+- Confirmed that password validation works correctly for both correct and incorrect passwords
+- Validated that initial balance is set to 100.0
 - Tested balance modification including setting to positive, zero, and negative values
 
 **Relationships:**
 - Referenced by Database for user management
-- Used by PaymentProcessor to handle financial transactions
+- Used by PaymentProcessor to handle transactions
 
 ### Item
 **Functionality:**
 - Represents an item in the marketplace with id, title, description, price, seller, and sold status
 - Items are created with unsold status by default
-- Provides methods to access and modify all properties
+- Provides methods to access all properties
 
 **Testing:**
-- Verified all getter and setter methods
+- Verified all getters and setters
 - Confirmed default sold status is false
 - Tested sold status modification
 - Validated all item properties are stored and retrieved correctly
@@ -75,7 +63,7 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 **Relationships:**
 - Stored and managed by Database
 - Used in Transaction to represent purchased items
-- Referenced in Message for item-related communications
+- Referenced in Message for item-related messaging
 
 ### Message
 **Functionality:**
@@ -145,7 +133,6 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 - Central data store for the entire marketplace system
 - Manages users, items, messages, and transactions
 - Provides methods to search, add, update, and remove data
-- Handles persistence through serialization to disk
 
 **Testing:**
 - Verified user management (add, retrieve, remove)
@@ -163,7 +150,6 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 - Container class for serializable data
 - Holds collections of users, items, messages, and transactions
 - Maintains next item ID for sequential assignment
-- Enables persistence of all marketplace data
 
 **Testing:**
 - Verified all data collections are properly stored and retrieved
@@ -174,8 +160,6 @@ The `JAVA PROJECTS` view allows you to manage your dependencies. More details ca
 - Used by Database for data serialization and storage
 
 ## Interface Descriptions
-
-The project includes interfaces for the implementing classes:
 
 - **UserInterface**: Defines user functionality including username, password checking, and balance management
 - **ItemInterface**: Defines item properties and behavior
