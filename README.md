@@ -1,6 +1,6 @@
 # CS180 Group Project - Marketplace
 ## L10-Team1 Phase 2
-### Sungmin Lee, Justin Zheng, Krisha Soneji, Christopher Han
+### Sungmin Lee, Justin Zheng
 
 ## Compilation and Running Instructions
 
