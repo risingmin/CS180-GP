@@ -1,11 +1,23 @@
 package server;
 
 /**
- * Main class to run the Marketplace server
+ * MarketplaceServerMain class
+ *
+ * This class provides the entry point for running the marketplace server.
+ * It handles command-line arguments, server initialization, and graceful shutdown.
+ * 
+ * @author L10-Team1 
+ *
+ * @version April 2024
+ *
  */
 public class MarketplaceServerMain {
     private static final int DEFAULT_PORT = 8080;
 
+    /**
+     * Main method to run the Marketplace server
+     * @param args Command-line arguments, first argument can be port number
+     */
     public static void main(String[] args) {
         int port = DEFAULT_PORT;
         

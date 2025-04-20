@@ -4,7 +4,15 @@ import database.*;
 import java.util.*;
 
 /**
- * Main class to run the Marketplace client with a command-line interface
+ * MarketplaceClientMain class
+ *
+ * This class provides a command-line interface for the Marketplace client.
+ * It handles user interaction, displays menus, and processes user commands.
+ * 
+ * @author L10-Team1 
+ *
+ * @version April 2024
+ *
  */
 public class MarketplaceClientMain {
     private static final String DEFAULT_HOST = "localhost";
@@ -12,6 +20,10 @@ public class MarketplaceClientMain {
     private static MarketplaceClient client;
     private static Scanner scanner;
 
+    /**
+     * Main method to run the Marketplace client
+     * @param args Command-line arguments (not used)
+     */
     public static void main(String[] args) {
         client = new MarketplaceClient();
         scanner = new Scanner(System.in);
@@ -58,6 +70,9 @@ public class MarketplaceClientMain {
         System.out.println("Disconnected from server. Goodbye!");
     }
     
+    /**
+     * Displays the main menu options to the user
+     */
     private static void displayMenu() {
         System.out.println("\n===== MARKETPLACE CLIENT =====");
         System.out.println("Currently logged in: " + (client.getLoggedInUser() != null ? client.getLoggedInUser() : "Not logged in"));
@@ -76,6 +91,11 @@ public class MarketplaceClientMain {
         System.out.println("============================");
     }
     
+    /**
+     * Processes the user's menu selection
+     * @param choice Menu option selected by the user
+     * @return true to continue running the client, false to exit
+     */
     private static boolean handleMenuChoice(int choice) {
         switch (choice) {
             case 1: // Register
@@ -119,6 +139,9 @@ public class MarketplaceClientMain {
         return true;
     }
     
+    /**
+     * Handles user registration process
+     */
     private static void registerUser() {
         System.out.println("\n----- REGISTER -----");
         String username = promptString("Enter username: ");
@@ -133,6 +156,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Handles user login process
+     */
     private static void loginUser() {
         System.out.println("\n----- LOGIN -----");
         String username = promptString("Enter username: ");
@@ -147,6 +173,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Handles the process of adding a new item to sell
+     */
     private static void addItem() {
         if (client.getLoggedInUser() == null) {
             System.out.println("You must be logged in to add an item.");
@@ -167,6 +196,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Handles item search functionality
+     */
     private static void searchItems() {
         System.out.println("\n----- SEARCH ITEMS -----");
         String query = promptString("Enter search query: ");
@@ -184,6 +216,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Handles the process of buying an item
+     */
     private static void buyItem() {
         if (client.getLoggedInUser() == null) {
             System.out.println("You must be logged in to buy an item.");
@@ -202,6 +237,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Displays all items listed by the current user
+     */
     private static void viewMyItems() {
         if (client.getLoggedInUser() == null) {
             System.out.println("You must be logged in to view your items.");
@@ -222,6 +260,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Handles sending messages to other users
+     */
     private static void sendMessage() {
         if (client.getLoggedInUser() == null) {
             System.out.println("You must be logged in to send messages.");
@@ -242,6 +283,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Displays all messages for the current user
+     */
     private static void viewMessages() {
         if (client.getLoggedInUser() == null) {
             System.out.println("You must be logged in to view messages.");
@@ -265,6 +309,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Displays all transactions for the current user
+     */
     private static void viewTransactions() {
         if (client.getLoggedInUser() == null) {
             System.out.println("You must be logged in to view transactions.");
@@ -292,6 +339,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Checks and displays the current user's balance
+     */
     private static void checkBalance() {
         if (client.getLoggedInUser() == null) {
             System.out.println("You must be logged in to check your balance.");
@@ -307,6 +357,9 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Handles user logout process
+     */
     private static void logout() {
         if (client.getLoggedInUser() == null) {
             System.out.println("You are not logged in.");
@@ -322,12 +375,21 @@ public class MarketplaceClientMain {
         }
     }
     
-    // Helper methods for input handling
+    /**
+     * Helper method to prompt for string input
+     * @param prompt Message to display to the user
+     * @return User's string input
+     */
     private static String promptString(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
     }
     
+    /**
+     * Helper method to prompt for integer input with validation
+     * @param prompt Message to display to the user
+     * @return User's validated integer input
+     */
     private static int promptInt(String prompt) {
         while (true) {
             try {
@@ -339,6 +401,11 @@ public class MarketplaceClientMain {
         }
     }
     
+    /**
+     * Helper method to prompt for double input with validation
+     * @param prompt Message to display to the user
+     * @return User's validated double input
+     */
     private static double promptDouble(String prompt) {
         while (true) {
             try {

@@ -6,10 +6,18 @@ import java.io.*;
 import java.util.*;
 
 /**
- * MarketplaceClient class for connecting to the marketplace server
- * All data is stored on the server and accessed via network I/O
+ * MarketplaceClient class
+ *
+ * This class implements the MarketplaceClientInterface and provides functionality for connecting
+ * to the marketplace server, handling user authentication, and performing marketplace operations.
+ * All data is stored on the server and accessed via network I/O.
+ * 
+ * @author L10-Team1 
+ *
+ * @version April 2024
+ *
  */
-public class MarketplaceClient {
+public class MarketplaceClient implements MarketplaceClientInterface {
     private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
@@ -22,6 +30,7 @@ public class MarketplaceClient {
      * @param port Server port number
      * @return true if connection successful, false otherwise
      */
+    @Override
     public boolean connect(String host, int port) {
         try {
             socket = new Socket(host, port);
@@ -38,7 +47,9 @@ public class MarketplaceClient {
     
     /**
      * Disconnect from the marketplace server
+     * Sends exit command to server and closes all resources
      */
+    @Override
     public void disconnect() {
         if (!connected) return;
         
@@ -57,11 +68,12 @@ public class MarketplaceClient {
     }
     
     /**
-     * Login to the marketplace
-     * @param username Username
-     * @param password Password
-     * @return TransactionResult indicating success/failure
+     * Login to the marketplace with credentials
+     * @param username Username to login with
+     * @param password Password for the user
+     * @return TransactionResult indicating success/failure of login attempt
      */
+    @Override
     public TransactionResult login(String username, String password) {
         try {
             oos.writeObject("LOGIN");
@@ -80,11 +92,12 @@ public class MarketplaceClient {
     }
     
     /**
-     * Register a new user
-     * @param username Username
-     * @param password Password
-     * @return TransactionResult indicating success/failure
+     * Register a new user in the marketplace
+     * @param username Username for new account
+     * @param password Password for new account
+     * @return TransactionResult indicating success/failure of registration
      */
+    @Override
     public TransactionResult register(String username, String password) {
         try {
             oos.writeObject("REGISTER");
@@ -99,9 +112,10 @@ public class MarketplaceClient {
     }
     
     /**
-     * Logout from the marketplace
-     * @return TransactionResult indicating success/failure
+     * Logout current user from the marketplace
+     * @return TransactionResult indicating success/failure of logout
      */
+    @Override
     public TransactionResult logout() {
         try {
             oos.writeObject("LOGOUT");
@@ -118,12 +132,13 @@ public class MarketplaceClient {
     }
     
     /**
-     * Add an item to the marketplace
+     * Add an item to the marketplace for sale
      * @param title Item title
      * @param description Item description
      * @param price Item price
-     * @return TransactionResult indicating success/failure
+     * @return TransactionResult indicating success/failure and the new item ID
      */
+    @Override
     public TransactionResult addItem(String title, String description, double price) {
         try {
             oos.writeObject("ADD_ITEM");
@@ -139,10 +154,11 @@ public class MarketplaceClient {
     }
     
     /**
-     * Search for items in the marketplace
-     * @param query Search query
-     * @return List of matching items
+     * Search for items in the marketplace by keyword
+     * @param query Search keyword
+     * @return List of matching items, empty list if none found or error
      */
+    @Override
     @SuppressWarnings("unchecked")
     public List<Item> searchItems(String query) {
         try {
@@ -158,10 +174,11 @@ public class MarketplaceClient {
     }
     
     /**
-     * Buy an item from the marketplace
+     * Purchase an item from the marketplace
      * @param itemId ID of the item to buy
-     * @return TransactionResult indicating success/failure
+     * @return TransactionResult indicating success/failure of purchase
      */
+    @Override
     public TransactionResult buyItem(int itemId) {
         try {
             oos.writeObject("BUY_ITEM");
@@ -175,9 +192,10 @@ public class MarketplaceClient {
     }
     
     /**
-     * Get items listed by the logged-in user
-     * @return List of user's items
+     * Retrieve items listed by the current logged-in user
+     * @return List of user's items, empty list if none or error
      */
+    @Override
     @SuppressWarnings("unchecked")
     public List<Item> getUserItems() {
         try {
@@ -192,12 +210,13 @@ public class MarketplaceClient {
     }
     
     /**
-     * Send a message to another user
-     * @param recipient Recipient username
-     * @param content Message content
-     * @param itemId ID of item the message is about
-     * @return TransactionResult indicating success/failure
+     * Send a message to another user regarding an item
+     * @param recipient Username of message recipient
+     * @param content Message text content
+     * @param itemId ID of item the message is about (0 for general messages)
+     * @return TransactionResult indicating success/failure of message sending
      */
+    @Override
     public TransactionResult sendMessage(String recipient, String content, int itemId) {
         try {
             oos.writeObject("SEND_MESSAGE");
@@ -213,9 +232,10 @@ public class MarketplaceClient {
     }
     
     /**
-     * Get messages for the logged-in user
-     * @return List of messages
+     * Get all messages for the current logged-in user
+     * @return List of messages, empty list if none or error
      */
+    @Override
     @SuppressWarnings("unchecked")
     public List<Message> getMessages() {
         try {
@@ -230,9 +250,10 @@ public class MarketplaceClient {
     }
     
     /**
-     * Get transactions for the logged-in user
-     * @return List of transactions
+     * Get transaction history for the current logged-in user
+     * @return List of transactions, empty list if none or error
      */
+    @Override
     @SuppressWarnings("unchecked")
     public List<Transaction> getTransactions() {
         try {
@@ -247,9 +268,10 @@ public class MarketplaceClient {
     }
     
     /**
-     * Get the balance of the logged-in user
+     * Get current balance of logged-in user
      * @return User balance or -1 if not logged in or error
      */
+    @Override
     public double getBalance() {
         try {
             oos.writeObject("GET_BALANCE");
@@ -263,17 +285,19 @@ public class MarketplaceClient {
     }
     
     /**
-     * Check if connected to server
+     * Check if client is connected to server
      * @return true if connected, false otherwise
      */
+    @Override
     public boolean isConnected() {
         return connected;
     }
     
     /**
-     * Get the username of the logged-in user
+     * Get username of currently logged-in user
      * @return Username or null if not logged in
      */
+    @Override
     public String getLoggedInUser() {
         return loggedInUser;
     }

@@ -4,6 +4,17 @@ import java.io.*;
 import java.util.*;
 import database.*;
 
+/**
+ * MarketplaceServer class
+ *
+ * Implements the server-side logic for the marketplace system.
+ * Listens for client connections, processes commands, and manages concurrent clients.
+ * Handles user authentication, item management, messaging, transactions, and persistence.
+ * 
+ * @author L10-Team1
+ * @version April 2024
+ */
+
 public class MarketplaceServer implements MarketplaceServerInterface {
     private ServerSocket serverSocket;
     private Database database;
