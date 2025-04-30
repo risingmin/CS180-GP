@@ -86,8 +86,10 @@ public class MarketplaceClientMain {
         System.out.println("8. View Messages");
         System.out.println("9. View Transactions");
         System.out.println("10. Check Balance");
-        System.out.println("11. Logout");
-        System.out.println("12. Exit");
+        System.out.println("11. Delete Item");
+        System.out.println("12. Delete Account");
+        System.out.println("13. Logout");
+        System.out.println("14. Exit");
         System.out.println("============================");
     }
     
@@ -128,10 +130,16 @@ public class MarketplaceClientMain {
             case 10: // Check Balance
                 checkBalance();
                 break;
-            case 11: // Logout
+            case 11: // Delete Item
+                deleteItem();
+                break;
+            case 12: // Delete Account
+                deleteAccount();
+                break;
+            case 13: // Logout
                 logout();
                 break;
-            case 12: // Exit
+            case 14: // Exit
                 return false;
             default:
                 System.out.println("Invalid choice. Please try again.");
@@ -354,6 +362,55 @@ public class MarketplaceClientMain {
             System.out.println("Error retrieving balance.");
         } else {
             System.out.printf("Your current balance: $%.2f\n", balance);
+        }
+    }
+    
+    /**
+     * Handles item deletion process
+     */
+    private static void deleteItem() {
+        if (client.getLoggedInUser() == null) {
+            System.out.println("You must be logged in to delete an item.");
+            return;
+        }
+        
+        System.out.println("\n----- DELETE ITEM -----");
+        viewMyItems(); // Show user's items first
+        
+        int itemId = promptInt("Enter ID of item to delete: ");
+        
+        TransactionResult result = client.deleteItem(itemId);
+        
+        if (result.isSuccess()) {
+            System.out.println("Item deleted successfully!");
+        } else {
+            System.out.println("Failed to delete item: " + result.getMessage());
+        }
+    }
+    
+    /**
+     * Handles account deletion process
+     */
+    private static void deleteAccount() {
+        if (client.getLoggedInUser() == null) {
+            System.out.println("You must be logged in to delete your account.");
+            return;
+        }
+        
+        System.out.println("\n----- DELETE ACCOUNT -----");
+        String confirm = promptString("Are you sure you want to delete your account? This cannot be undone. (yes/no): ");
+        
+        if (!confirm.toLowerCase().equals("yes")) {
+            System.out.println("Account deletion cancelled.");
+            return;
+        }
+        
+        TransactionResult result = client.deleteAccount();
+        
+        if (result.isSuccess()) {
+            System.out.println("Account deleted successfully!");
+        } else {
+            System.out.println("Failed to delete account: " + result.getMessage());
         }
     }
     

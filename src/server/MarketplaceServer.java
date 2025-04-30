@@ -147,6 +147,13 @@ public class MarketplaceServer implements MarketplaceServerInterface {
                     case "GET_BALANCE":
                         handleGetBalance(oos, currentUser);
                         break;
+                    case "DELETE_ACCOUNT":
+                        handleDeleteAccount(oos, currentUser);
+                        if (currentUser != null) currentUser = null; // Reset user if account deleted
+                        break;
+                    case "DELETE_ITEM":
+                        handleDeleteItem(ois, oos, currentUser);
+                        break;
                     case "EXIT":
                         clientRunning = false;
                         break;
@@ -361,5 +368,67 @@ public class MarketplaceServer implements MarketplaceServerInterface {
         
         User user = database.getUserByUsername(currentUser);
         oos.writeObject(user.getBalance());
+    }
+    
+    /**
+     * Handle delete account command
+     */
+    private void handleDeleteAccount(ObjectOutputStream oos, String currentUser) throws IOException {
+        if (currentUser == null) {
+            oos.writeObject(new TransactionResult(false, "Not logged in"));
+            return;
+        }
+        
+        // Remove all user items from database
+        List<Item> userItems = new ArrayList<>();
+        for (int i = 1; ; i++) {
+            Item item = database.getItemById(i);
+            if (item == null) break;
+            if (item.getSeller().equals(currentUser)) {
+                userItems.add(item);
+            }
+        }
+        
+        // Remove all items owned by the user
+        for (Item item : userItems) {
+            database.removeItem(item.getId());
+        }
+        
+        // Delete user account
+        database.removeUser(currentUser);
+        database.saveToDisk();
+        
+        oos.writeObject(new TransactionResult(true, "Account deleted successfully"));
+    }
+    
+    /**
+     * Handle delete item command
+     */
+    private void handleDeleteItem(ObjectInputStream ois, ObjectOutputStream oos, String currentUser) 
+            throws IOException, ClassNotFoundException {
+        if (currentUser == null) {
+            oos.writeObject(new TransactionResult(false, "Not logged in"));
+            return;
+        }
+        
+        int itemId = (Integer) ois.readObject();
+        
+        Item item = database.getItemById(itemId);
+        if (item == null) {
+            oos.writeObject(new TransactionResult(false, "Item not found"));
+            return;
+        }
+        
+        // Check if user is the owner of the item
+        if (!item.getSeller().equals(currentUser)) {
+            oos.writeObject(new TransactionResult(false, "You can only delete your own items"));
+            return;
+        }
+        
+        // Delete the item
+        database.removeItem(itemId);
+        database.saveToDisk();
+        
+        oos.writeObject(new TransactionResult(true, "Item deleted successfully"));
     }
 }

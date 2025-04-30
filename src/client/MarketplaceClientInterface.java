@@ -117,4 +117,17 @@ public interface MarketplaceClientInterface {
      * @return Username or null if not logged in
      */
     String getLoggedInUser();
+    
+    /**
+     * Delete the current user's account
+     * @return TransactionResult indicating success/failure
+     */
+    TransactionResult deleteAccount();
+    
+    /**
+     * Delete an item listing
+     * @param itemId ID of the item to delete
+     * @return TransactionResult indicating success/failure
+     */
+    TransactionResult deleteItem(int itemId);
 }

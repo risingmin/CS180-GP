@@ -19,10 +19,16 @@ java -cp bin server.MarketplaceServerMain
 ```
 
 ### Running the Client
-To run the client:
+To run the command-line client:
 
 ```bash
 java -cp bin client.MarketplaceClientMain
+```
+
+To run the GUI client:
+
+```bash
+java -cp bin gui.MarketplaceClientGUI
 ```
 
 ### Running Tests
@@ -95,20 +101,37 @@ java -cp bin:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar org.junit.runner.JUn
     - Select option 10 to check your balance
     - The client will display your current balance
 
-13. **Logging Out**
-    - Select option 11 to logout
+13. **Deleting Items**
+    - Select option 11 to delete an item
+    - Enter the ID of the item to delete
+    - The client will display a confirmation or error message
+
+14. **Deleting Account**
+    - Select option 12 to delete your account
+    - Confirm the deletion
+    - The client will display a success message or error message
+
+15. **Logging Out**
+    - Select option 13 to logout
     - The client will display "Logout successful"
 
-14. **Exiting the Client**
-    - Select option 12 to exit
+16. **Exiting the Client**
+    - Select option 14 to exit
     - The client will disconnect from the server and exit
 
-15. **Multiple Clients**
+17. **GUI Client Testing**
+    - Run the GUI client using the command provided above
+    - Enter server host and port when prompted
+    - Use the login screen to register or login
+    - Navigate between marketplace items, user items, messages, and account tabs
+    - Test all functions including buying, selling, sending messages, and account management
+
+18. **Multiple Clients**
     - Run multiple client instances simultaneously
     - Each client should be able to interact with the server independently
     - Test concurrent actions like multiple users trying to buy the same item
 
-16. **Server Persistence**
+19. **Server Persistence**
     - After shutting down the server and restarting it, all data should persist
     - Users should be able to login with existing credentials
     - Previously listed items should still be available
@@ -221,6 +244,86 @@ java -cp bin:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar org.junit.runner.JUn
 **Relationships:**
 - Implements MarketplaceClientInterface
 
+### MarketplaceClientMain
+**Functionality:**
+- Command-line interface for the client
+
+**Testing:**
+- Manual testing of user commands
+
+**Relationships:**
+- Uses MarketplaceClient
+
+### MarketplaceServerMain
+**Functionality:**
+- Main class to initialize and run the server
+
+**Testing:**
+- Manual testing of server startup and shutdown
+
+**Relationships:**
+- Uses MarketplaceServer
+
+### MarketplaceClientGUI
+**Functionality:**
+- GUI interface for the client with navigation between panels
+
+**Testing:**
+- Manual testing of GUI components and interactions
+
+**Relationships:**
+- Uses MarketplaceClient, manages GUI panels
+
+### LoginPanel
+**Functionality:**
+- Login and registration UI panel
+
+**Testing:**
+- Manual testing of authentication flow
+
+**Relationships:**
+- Used by MarketplaceClientGUI, implements LoginPanelInterface
+
+### DashboardPanel
+**Functionality:**
+- Main dashboard panel with tabs for different functionality areas
+
+**Testing:**
+- Manual testing of navigation and data display
+
+**Relationships:**
+- Used by MarketplaceClientGUI, implements DashboardPanelInterface
+
+### ItemsPanel
+**Functionality:**
+- Panel for viewing, searching, adding, buying and managing items
+
+**Testing:**
+- Manual testing of item management operations
+
+**Relationships:**
+- Used by DashboardPanel, implements ItemsPanelInterface
+
+### AccountPanel
+**Functionality:**
+- Panel for viewing balance, transaction history, and account management
+
+**Testing:**
+- Manual testing of account operations and balance display
+
+**Relationships:**
+- Used by DashboardPanel, implements AccountPanelInterface
+
+### MessagesPanel
+**Functionality:**
+- Panel for viewing and sending messages
+
+**Testing:**
+- Manual testing of messaging functionality
+
+**Relationships:**
+- Used by DashboardPanel, implements MessagesPanelInterface
+
 ## Interface Descriptions
 
 - **UserInterface**: User account methods
@@ -233,3 +336,9 @@ java -cp bin:lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar org.junit.runner.JUn
 - **DatabaseDataInterface**: Data container
 - **MarketplaceServerInterface**: Server operations
 - **MarketplaceClientInterface**: Client operations
+- **MarketplaceClientGUIInterface**: GUI client operations
+- **LoginPanelInterface**: Login UI operations
+- **DashboardPanelInterface**: Dashboard UI operations
+- **ItemsPanelInterface**: Item management UI operations
+- **AccountPanelInterface**: Account management UI operations
+- **MessagesPanelInterface**: Messaging UI operations

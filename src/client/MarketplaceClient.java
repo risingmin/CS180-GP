@@ -285,6 +285,44 @@ public class MarketplaceClient implements MarketplaceClientInterface {
     }
     
     /**
+     * Delete the current user's account
+     * @return TransactionResult indicating success/failure
+     */
+    @Override
+    public TransactionResult deleteAccount() {
+        try {
+            oos.writeObject("DELETE_ACCOUNT");
+            oos.flush();
+            
+            TransactionResult result = (TransactionResult) ois.readObject();
+            if (result.isSuccess()) {
+                loggedInUser = null;
+            }
+            return result;
+        } catch (IOException | ClassNotFoundException e) {
+            return new TransactionResult(false, "Error: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Delete an item listing
+     * @param itemId ID of the item to delete
+     * @return TransactionResult indicating success/failure
+     */
+    @Override
+    public TransactionResult deleteItem(int itemId) {
+        try {
+            oos.writeObject("DELETE_ITEM");
+            oos.writeObject(itemId);
+            oos.flush();
+            
+            return (TransactionResult) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return new TransactionResult(false, "Error: " + e.getMessage());
+        }
+    }
+    
+    /**
      * Check if client is connected to server
      * @return true if connected, false otherwise
      */
