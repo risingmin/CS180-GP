@@ -51,6 +51,9 @@ public class MarketplaceClientGUI implements MarketplaceClientGUIInterface,
      */
     @Override
     public void initialize() {
+        // Set a larger default font for all Swing components
+        setGlobalUIFont(new Font("SansSerif", Font.PLAIN, 18));
+
         // Create the main frame
         mainFrame = new JFrame("Marketplace Client");
         mainFrame.setSize(1000, 700);
@@ -88,6 +91,20 @@ public class MarketplaceClientGUI implements MarketplaceClientGUIInterface,
         
         // Make the frame visible
         mainFrame.setVisible(true);
+    }
+    
+    /**
+     * Utility method to set a global font for all Swing components
+     */
+    private static void setGlobalUIFont(Font font) {
+        java.util.Enumeration<Object> keys = UIManager.getDefaults().keys();
+        while (keys.hasMoreElements()) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value instanceof javax.swing.plaf.FontUIResource) {
+                UIManager.put(key, font);
+            }
+        }
     }
     
     /**
@@ -211,29 +228,29 @@ public class MarketplaceClientGUI implements MarketplaceClientGUIInterface,
         // Use Swing's event dispatch thread for thread safety
         SwingUtilities.invokeLater(() -> {
             // Create the client
-            MarketplaceClient client = new MarketplaceClient();
+            final MarketplaceClient client = new MarketplaceClient();
             
             // Show connection dialog
-            String host = JOptionPane.showInputDialog("Enter server host:", "localhost");
-            if (host == null || host.trim().isEmpty()) {
-                host = "localhost";
-            }
+            final String host = JOptionPane.showInputDialog("Enter server host:", "localhost");
+            final String hostToUse = (host == null || host.trim().isEmpty()) ? "localhost" : host;
             
+            // Handle port input
             String portStr = JOptionPane.showInputDialog("Enter server port:", "8080");
-            int port = 8080;
+            int portValue = 8080; // Default port
             try {
-                port = Integer.parseInt(portStr);
+                portValue = Integer.parseInt(portStr);
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, 
                     "Invalid port. Using default: 8080", 
                     "Warning", JOptionPane.WARNING_MESSAGE);
             }
+            final int port = portValue;
             
             // Connect to server
-            boolean connected = client.connect(host, port);
+            boolean connected = client.connect(hostToUse, port);
             if (!connected) {
                 JOptionPane.showMessageDialog(null, 
-                    "Failed to connect to server at " + host + ":" + port, 
+                    "Failed to connect to server at " + hostToUse + ":" + port, 
                     "Connection Error", JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }

@@ -26,7 +26,7 @@ public class DatabaseData implements DatabaseDataInterface, Serializable {
         this.users = users;
         this.items = items;
         this.messages = messages;
-        this.transactions = transactions;
+        this.transactions = (transactions != null) ? transactions : new ArrayList<>();
         this.nextItemId = nextItemId;
     }
     
@@ -63,7 +63,7 @@ public class DatabaseData implements DatabaseDataInterface, Serializable {
     * @return transactions
     */
     public List<Transaction> getTransactions() {
-        return transactions;
+        return (transactions != null) ? transactions : new ArrayList<>();
     }
     
     /**

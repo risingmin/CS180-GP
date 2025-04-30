@@ -16,11 +16,9 @@ import java.util.List;
  */
 public class PaymentProcessor implements PaymentProcessorInterface {
     private Database database; // Database object to interact with user and item data
-    private List<Transaction> transactions; // List to store transactions
     
     public PaymentProcessor(Database database) {
         this.database = database;
-        this.transactions = new ArrayList<>();
     }
     
     /**
@@ -77,12 +75,19 @@ public class PaymentProcessor implements PaymentProcessorInterface {
         // Mark item as sold
         item.setSold(true);
         
-        // Create and store transaction record
+        // Create transaction record
         Transaction transaction = new Transaction(buyerUsername, sellerUsername, itemId, price);
-        transactions.add(transaction);
+        
+        // Add to the database (removed local transactions list since it's redundant)
+        database.addTransaction(transaction);
         
         // Save changes to disk
         database.saveToDisk();
+        
+        System.out.println("Transaction created: ID=" + transaction.getId() + 
+                           ", Buyer=" + transaction.getBuyer() + 
+                           ", Seller=" + transaction.getSeller() + 
+                           ", ItemId=" + transaction.getItemId());
         
         return new TransactionResult(true, "Payment processed successfully", itemId);
     }
@@ -94,7 +99,6 @@ public class PaymentProcessor implements PaymentProcessorInterface {
      * @param amount amount to compare
      * @return true if sufficient funds, false otherwise
      */
-    // Check if User's balance is sufficient to purchase the item. Return true if sufficient
     @Override
     public boolean hasSufficientFunds(String username, double amount) {
         User user = database.getUserByUsername(username);
@@ -105,7 +109,6 @@ public class PaymentProcessor implements PaymentProcessorInterface {
         return user.getBalance() >= amount;
     }
     
-
     /**
      * Return all transactions specific to a user
      * 
@@ -113,14 +116,7 @@ public class PaymentProcessor implements PaymentProcessorInterface {
      * @return userTransactions list of transactions for the user (buyer or seller)
      */
     public List<Transaction> getTransactionsByUser(String username) {
-        List<Transaction> userTransactions = new ArrayList<>();
-        
-        for (Transaction transaction : transactions) {
-            if (transaction.getBuyer().equals(username) || transaction.getSeller().equals(username)) {
-                userTransactions.add(transaction);
-            }
-        }
-        
-        return userTransactions;
+        // Delegate to the database rather than maintaining a separate list
+        return database.getTransactionsForUser(username);
     }
 }

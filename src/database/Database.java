@@ -49,7 +49,8 @@ public class Database implements DatabaseInterface {
                 this.messages = data.getMessages();
                 this.nextItemId = data.getNextItemId();
                 this.transactions = data.getTransactions();
-                System.out.println("Database loaded from disk");
+                if (this.transactions == null) this.transactions = new ArrayList<>();
+                System.out.println("Database loaded from disk. Transactions: " + this.transactions.size());
             } catch (Exception e) {
                 System.err.println("Error loading database from disk: " + e.getMessage());
             }
@@ -192,7 +193,9 @@ public class Database implements DatabaseInterface {
     */
     public void addTransaction(Transaction transaction) {
         synchronized(this) {
+            if (transactions == null) transactions = new ArrayList<>();
             transactions.add(transaction);
+            System.out.println("Transaction added. Total transactions: " + transactions.size());
         }
     }
     
@@ -203,14 +206,14 @@ public class Database implements DatabaseInterface {
     */
     public List<Transaction> getTransactionsForUser(String username) {
         synchronized(this) {
+            if (transactions == null) transactions = new ArrayList<>();
             List<Transaction> userTransactions = new ArrayList<>();
-            
             for (Transaction transaction : transactions) {
                 if (transaction.getBuyer().equals(username) || transaction.getSeller().equals(username)) {
                     userTransactions.add(transaction);
                 }
             }
-            
+            System.out.println("Returning " + userTransactions.size() + " transactions for user " + username);
             return userTransactions;
         }
     }

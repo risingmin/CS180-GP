@@ -135,4 +135,17 @@ public class DatabaseTest {
         assertNotNull("User should be loaded from disk", loadedUser);
         assertEquals("Username should match", "loadTest", loadedUser.getUsername());
     }
+    
+    @Test
+    public void testTransactionPersistence() {
+        database.addTransaction(testTransaction);
+        database.saveToDisk();
+
+        Database db2 = new Database();
+        db2.loadFromDisk();
+        List<Transaction> txs = db2.getTransactionsForUser("anotherUser");
+        assertNotNull("Transactions should not be null after reload", txs);
+        assertTrue("Should find at least one transaction after reload", !txs.isEmpty());
+        assertEquals("Transaction buyer should match after reload", "anotherUser", txs.get(0).getBuyer());
+    }
 }

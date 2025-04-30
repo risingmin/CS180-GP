@@ -274,9 +274,8 @@ public class MarketplaceServer implements MarketplaceServerInterface {
         PaymentProcessor processor = new PaymentProcessor(database);
         TransactionResult result = processor.processPayment(currentUser, seller, itemId);
         
-        if (result.isSuccess()) {
-            database.saveToDisk();
-        }
+        // The transaction has already been added to the database by the PaymentProcessor
+        // and database.saveToDisk() was already called there, so we don't need to do it again here
         
         oos.writeObject(result);
     }
@@ -352,8 +351,8 @@ public class MarketplaceServer implements MarketplaceServerInterface {
             oos.writeObject(new ArrayList<Transaction>());
             return;
         }
-        
         List<Transaction> transactions = database.getTransactionsForUser(currentUser);
+        System.out.println("Server: Returning " + transactions.size() + " transactions for user " + currentUser);
         oos.writeObject(transactions);
     }
     

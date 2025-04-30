@@ -29,7 +29,7 @@ public class DashboardPanel implements DashboardPanelInterface {
     private AccountPanel accountPanel;
     
     private MarketplaceClient client;
-    private DashboardCallback callback;
+    private DashboardPanelInterface.DashboardCallback callback;
     
     // Tab indices
     public static final int MARKETPLACE_TAB = 0;
@@ -81,7 +81,7 @@ public class DashboardPanel implements DashboardPanelInterface {
         accountPanel = new AccountPanel(client);
         
         // Set up account callback
-        accountPanel.setAccountCallback(new AccountPanel.AccountCallback() {
+        accountPanel.setAccountCallback(new AccountPanelInterface.AccountCallback() {
             @Override
             public void onAccountDeleted() {
                 if (callback != null) {
@@ -92,6 +92,7 @@ public class DashboardPanel implements DashboardPanelInterface {
             @Override
             public void onBalanceChanged(double newBalance) {
                 // Nothing to do here
+                System.out.println("Balance changed to: $" + newBalance);
             }
         });
         
@@ -181,7 +182,7 @@ public class DashboardPanel implements DashboardPanelInterface {
      * @param callback Callback interface implementation
      */
     @Override
-    public void setDashboardCallback(DashboardCallback callback) {
+    public void setDashboardCallback(DashboardPanelInterface.DashboardCallback callback) {
         this.callback = callback;
     }
 }

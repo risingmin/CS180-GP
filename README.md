@@ -31,6 +31,7 @@ To run the GUI client:
 java -cp bin gui.MarketplaceClientGUI
 ```
 
+
 ### Running Tests
 To run all JUnit tests:
 

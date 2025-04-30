@@ -64,8 +64,7 @@ public class AccountPanel implements AccountPanelInterface {
         // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         
-        refreshButton = new JButton("Refresh Transactions");
-        refreshButton.setFont(new Font("Arial", Font.BOLD, 12));
+        refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(e -> refreshAccountData());
         
         deleteAccountButton = new JButton("Delete Account");
@@ -138,89 +137,76 @@ public class AccountPanel implements AccountPanelInterface {
         // Update transactions table
         tableModel.setRowCount(0);
         
-        List<Transaction> transactions = client.getTransactions();() + " transactions");
-        int rowNum = 1;  // Counter for transaction numbers
-        for (Transaction transaction : transactions) { // Counter for transaction numbers
+        List<Transaction> transactions = client.getTransactions();
+        for (Transaction transaction : transactions) {
             String type;
             if (transaction.getBuyer().equals(client.getLoggedInUser())) {
-                type = "Purchase from " + transaction.getSeller();saction.getBuyer().equals(client.getLoggedInUser())) {
-            } else {ller();
-                type = "Sale to " + transaction.getBuyer();   System.out.println("Found purchase: Item ID " + transaction.getItemId() + 
-            }                     " from " + transaction.getSeller() + 
-             transaction.getAmount());
+                type = "Purchase from " + transaction.getSeller();
+            } else {
+                type = "Sale to " + transaction.getBuyer();
+            }
+            
             tableModel.addRow(new Object[]{
-                rowNum++,  // Use row number instead of transaction.getId()saction.getBuyer();
-                transaction.getItemId(),m.out.println("Found sale: Item ID " + transaction.getItemId() + 
-                type,+ transaction.getBuyer() + 
-                transaction.getAmount(),ount());
+                transaction.getId(),
+                transaction.getItemId(),
+                type,
+                transaction.getAmount(),
                 dateFormat.format(transaction.getTimestamp())
-            });   
-        }    tableModel.addRow(new Object[]{
+            });
+        }
         
-        // Notify callback if balance has changedItemId(),
+        // Notify callback if balance has changed
         if (callback != null) {
-            callback.onBalanceChanged(currentBalance);       transaction.getAmount(),
-        }           dateFormat.format(transaction.getTimestamp())
-    }        });
-     }
+            callback.onBalanceChanged(currentBalance);
+        }
+    }
+    
     /**
-     * Get the current user's balanceEmpty()) {
-     * @return User balance     System.out.println("No transactions found for user: " + client.getLoggedInUser());
+     * Get the current user's balance
+     * @return User balance
      */
     @Override
-    public double getBalance() {balance has changed
-        return currentBalance;   if (callback != null) {
-    }        callback.onBalanceChanged(currentBalance);
-     }
+    public double getBalance() {
+        return currentBalance;
+    }
+    
     /**
      * Delete the user's account after confirmation
      * @return true if account deleted successfully, false otherwise
-     */e current user's balance
+     */
     @Override
     public boolean deleteAccount() {
         int confirm = JOptionPane.showConfirmDialog(mainPanel,
             "Are you sure you want to delete your account? This cannot be undone.",
-            "Confirm Account Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);return currentBalance;
+            "Confirm Account Deletion", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         
         if (confirm != JOptionPane.YES_OPTION) {
             return false;
-        }elete the user's account after confirmation
-        cessfully, false otherwise
+        }
+        
         // Ask for additional confirmation
         int secondConfirm = JOptionPane.showConfirmDialog(mainPanel,
             "This will permanently delete all your data including items and transaction history.\n" +
             "Please confirm once more to proceed.",
-            "Final Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);    "Are you sure you want to delete your account? This cannot be undone.",
-        S_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            "Final Confirmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        
         if (secondConfirm != JOptionPane.YES_OPTION) {
-            return false;f (confirm != JOptionPane.YES_OPTION) {
-        }    return false;
+            return false;
+        }
         
         TransactionResult result = client.deleteAccount();
-        firmation
-        if (result.isSuccess()) {Pane.showConfirmDialog(mainPanel,
-            if (callback != null) {l your data including items and transaction history.\n" +
-                callback.onAccountDeleted();Please confirm once more to proceed.",
-            }rmation", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        
+        if (result.isSuccess()) {
+            if (callback != null) {
+                callback.onAccountDeleted();
+            }
             return true;
-        } else { {
+        } else {
             JOptionPane.showMessageDialog(mainPanel,
                 "Failed to delete account: " + result.getMessage(),
                 "Error", JOptionPane.ERROR_MESSAGE);
-            return false;ransactionResult result = client.deleteAccount();
-        }   
-    }    if (result.isSuccess()) {
-         if (callback != null) {
-    /**
-     * Set the callback interface for account events
-     * @param callback Callback interface implementation     return true;
-     */e {
-    @Override
-    public void setAccountCallback(AccountCallback callback) { account: " + result.getMessage(),
-        this.callback = callback;           "Error", JOptionPane.ERROR_MESSAGE);
-    }           return false;
-}        }
-
+            return false;
+        }
     }
     
     /**

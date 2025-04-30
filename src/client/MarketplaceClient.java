@@ -25,6 +25,25 @@ public class MarketplaceClient implements MarketplaceClientInterface {
     private boolean connected;
 
     /**
+     * Default constructor
+     * Creates a client without connecting to a server
+     */
+    public MarketplaceClient() {
+        this.connected = false;
+        this.loggedInUser = null;
+    }
+
+    /**
+     * Constructor that creates a new client connection
+     * @param host Server hostname
+     * @param port Server port
+     */
+    public MarketplaceClient(String host, int port) {
+        this();
+        connect(host, port);
+    }
+
+    /**
      * Connect to the marketplace server
      * @param host Server hostname or IP address
      * @param port Server port number
@@ -257,12 +276,15 @@ public class MarketplaceClient implements MarketplaceClientInterface {
     @SuppressWarnings("unchecked")
     public List<Transaction> getTransactions() {
         try {
+            System.out.println("Client: Requesting transactions for " + loggedInUser);
             oos.writeObject("GET_TRANSACTIONS");
             oos.flush();
-            
-            return (List<Transaction>) ois.readObject();
+            List<Transaction> result = (List<Transaction>) ois.readObject();
+            System.out.println("Client: Received " + result.size() + " transactions from server");
+            return result;
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error getting transactions: " + e.getMessage());
+            e.printStackTrace();
             return new ArrayList<>();
         }
     }
