@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.*;
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MarketplaceServerTest {
     private MarketplaceServer server;
@@ -62,5 +63,49 @@ public class MarketplaceServerTest {
         } catch (IOException e) {
             // Expected exception
         }
+    }
+
+    @Test
+    public void testServerHandlesMultipleClients() throws InterruptedException {
+        int testPort = 23456;
+        
+        server.start(testPort);
+        assertTrue("Server should be running", server.isRunning());
+
+        AtomicBoolean client1Connected = new AtomicBoolean(false);
+        AtomicBoolean client2Connected = new AtomicBoolean(false);
+
+        // First client thread
+        Thread client1 = new Thread(() -> {
+            try (Socket socket = new Socket("localhost", testPort)) {
+                client1Connected.set(true);
+                // Keep connection open
+                Thread.sleep(500);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        // Second client thread
+        Thread client2 = new Thread(() -> {
+            try (Socket socket = new Socket("localhost", testPort)) {
+                client2Connected.set(true);
+                Thread.sleep(500);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        client1.start();
+        client2.start();
+
+        // Wait for clients to connect
+        Thread.sleep(1000);
+
+        assertTrue("First client should have connected", client1Connected.get());
+        assertTrue("Second client should have connected", client2Connected.get());
+
+        client1.join();
+        client2.join();
     }
 }
